@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% set active = 'reports' %}
+{% block content %}
+
+<h2 class="text-2xl font-semibold mb-6">Reports & Analytics</h2>
+
+<!-- Top Stats Row -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+
+    <div class="card text-center">
+        <p class="text-gray-500 text-sm">Average Attendance</p>
+        <h3 class="text-3xl font-bold mt-2">{{ avg_attendance }}%</h3>
+    </div>
+
+    <div class="card text-center">
+        <p class="text-gray-500 text-sm">Highest Performing Class</p>
+        <h3 class="text-xl font-semibold mt-2">{{ top_class }}</h3>
+    </div>
+
+    <div class="card text-center">
+        <p class="text-gray-500 text-sm">Total Attendance Records</p>
+        <h3 class="text-3xl font-bold mt-2">{{ total_records }}</h3>
+    </div>
+
+</div>
+
+<!-- Charts Section -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
+
+    <!-- Monthly Attendance Chart -->
+    <div class="card">
+        <h3 class="text-lg font-semibold mb-4">Monthly Attendance</h3>
+        <canvas id="monthlyChart" class="w-full h-64"></canvas>
+    </div>
+
+    <!-- Class-wise Attendance Chart -->
+    <div class="card">
+        <h3 class="text-lg font-semibold mb-4">Class-wise Attendance</h3>
+        <canvas id="classChart" class="w-full h-64"></canvas>
+    </div>
+
+</div>
+
+<!-- Individual Student Records Table -->
+<div class="card overflow-x-auto">
+    <h3 class="text-lg font-semibold mb-4">Student-wise Report</h3>
+
+    <table class="min-w-full text-sm">
+        <thead>
+            <tr class="border-b text-gray-600 bg-gray-50">
+                <th class="py-3 px-4 text-left">Student ID</th>
+                <th class="py-3 px-4 text-left">Name</th>
+                <th class="py-3 px-4 text-left">Class</th>
+                <th class="py-3 px-4 text-left">Total Attendance</th>
+                <th class="py-3 px-4 text-left">Percentage</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for s in report_list %}
+            <tr class="border-b hover:bg-gray-50">
+                <td class="py-3 px-4">{{ s.student_id }}</td>
+                <td class="py-3 px-4">{{ s.name }}</td>
+                <td class="py-3 px-4">{{ s.class_name }}</td>
+                <td class="py-3 px-4">{{ s.total_attendance }}</td>
+                <td class="py-3 px-4">{{ s.percentage }}%</td>
+            </tr>
+
+            {% else %}
+            <tr>
+                <td colspan="5" class="py-4 text-center text-gray-400">No records found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+// Monthly Attendance Chart
+const monthlyCtx = document.getElementById('monthlyChart');
+new Chart(monthlyCtx, {
+    type: 'bar',
+    data: {
+        labels: {{ months | safe }},
+        datasets: [{
+            label: 'Attendance %',
+            data: {{ monthly_values | safe }},
+            borderWidth: 1,
+            backgroundColor: 'rgba(37, 99, 235, 0.6)'
+        }]
+    }
+});
+
+// Class-wise Attendance Chart
+const classCtx = document.getElementById('classChart');
+new Chart(classCtx, {
+    type: 'pie',
+    data: {
+        labels: {{ class_labels | safe }},
+        datasets: [{
+            data: {{ class_values | safe }},
+            backgroundColor: [
+                'rgba(59,130,246,0.6)',
+                'rgba(16,185,129,0.6)',
+                'rgba(239,68,68,0.6)',
+                'rgba(234,179,8,0.6)'
+            ]
+        }]
+    }
+});
+</script>
+
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<!-- Heading -->
+<h2 class="text-3xl font-bold text-gray-800 mb-6">Dashboard</h2>
+
+<!-- Summary Cards -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+
+    <!-- Total Students -->
+    <div class="bg-white p-6 rounded-xl shadow">
+        <p class="text-gray-500 text-sm">Total Students</p>
+        <p class="text-3xl font-bold mt-2">{{ total }}</p>
+    </div>
+
+    <!-- Active Students -->
+    <div class="bg-white p-6 rounded-xl shadow">
+        <p class="text-gray-500 text-sm">Active Students</p>
+        <p class="text-3xl font-bold mt-2">{{ active_students }}</p>
+    </div>
+
+    <!-- Present Today -->
+    <div class="bg-white p-6 rounded-xl shadow">
+        <p class="text-gray-500 text-sm">Present Today</p>
+        <p class="text-3xl font-bold mt-2">{{ present }}</p>
+    </div>
+
+    <!-- Attendance Rate -->
+    <div class="bg-white p-6 rounded-xl shadow">
+        <p class="text-gray-500 text-sm">Attendance Rate</p>
+        <p class="text-3xl font-bold mt-2">{{ attendance_rate }}%</p>
+    </div>
+
+</div>
+
+<!-- Recent Attendance -->
+<div class="bg-white p-6 rounded-xl shadow mt-8">
+    <h3 class="text-xl font-semibold mb-4">Recent Attendance</h3>
+
+    {% if recent_logs %}
+
+    <ul>
+        {% for log in recent_logs %}
+        <li class="flex justify-between border-b py-2">
+            <span>{{ log.student_name }} ({{ log.student_id }})</span>
+            <span class="text-gray-500 text-sm">{{ log.timestamp }}</span>
+        </li>
+        {% endfor %}
+    </ul>
+
+    {% else %}
+
+    <p class="text-gray-400">No recent attendance records.</p>
+
+    {% endif %}
+</div>
+
+{% endblock %}

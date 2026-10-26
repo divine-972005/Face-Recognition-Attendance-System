@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% set active = 'results' %}
+{% block content %}
+
+
+<h2 class="text-2xl font-semibold mb-6">Student Results</h2>
+
+
+<!-- Add Result Button -->
+<div class="flex justify-end mb-4">
+<button onclick="openResultModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg shadow">
++ Add Result
+</button>
+</div>
+
+
+<!-- Results Table -->
+<div class="card overflow-x-auto">
+<table class="min-w-full text-sm">
+<thead>
+<tr class="border-b text-gray-600 bg-gray-50">
+<th class="py-3 px-4 text-left">Student ID</th>
+<th class="py-3 px-4 text-left">Name</th>
+<th class="py-3 px-4 text-left">Subject</th>
+<th class="py-3 px-4 text-left">Marks</th>
+<th class="py-3 px-4 text-left">Grade</th>
+<th class="py-3 px-4 text-left">Date</th>
+<th class="py-3 px-4 text-left">Actions</th>
+</tr>
+</thead>
+<tbody>
+{% for r in results %}
+<tr class="border-b hover:bg-gray-50">
+<td class="py-3 px-4">{{ r.student_student_id }}</td>
+<td class="py-3 px-4">{{ r.student_name }}</td>
+<td class="py-3 px-4">{{ r.subject }}</td>
+<td class="py-3 px-4">{{ r.marks }}</td>
+<td class="py-3 px-4">{{ r.grade }}</td>
+<td class="py-3 px-4">{{ r.date }}</td>
+<td class="py-3 px-4">
+<button class="text-blue-600 hover:underline text-sm">Edit</button>
+<button class="text-red-600 hover:underline text-sm ml-2">Delete</button>
+</td>
+</tr>
+{% else %}
+<tr>
+<td colspan="7" class="py-4 text-center text-gray-400">No results added yet.</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+
+
+{% include 'partials/add_result_modal.html' %}
+
+
+<script>
+function openResultModal() {
+document.getElementById('resultModal').classList.remove('hidden');
+}
+function closeResultModal() {
+document.getElementById('resultModal').classList.add('hidden');
+}
+</script>
+
+
+{% endblock %}

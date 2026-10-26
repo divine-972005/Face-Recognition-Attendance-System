@@ -1,0 +1,59 @@
+<!-- Base Template (base.html) using Tailwind CDN -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ title if title else 'FaceReco' }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .card { @apply bg-white shadow-md rounded-xl p-6; }
+        .nav-active { @apply text-blue-600 font-semibold bg-blue-50; }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+<!-- Top Navigation Bar -->
+<nav class="w-full bg-white shadow-sm fixed top-0 left-0 z-50">
+    <div class="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 bg-blue-600 text-white flex items-center justify-center rounded-xl font-bold">FR</div>
+            <div>
+                <h1 class="text-lg font-semibold leading-tight">FaceReco</h1>
+                <p class="text-xs text-gray-500 -mt-1">Attendance System</p>
+            </div>
+        </div>
+
+        <div class="flex items-center space-x-6">
+            <a href="{{ url_for('dashboard') }}" class="px-3 py-2 rounded-lg hover:bg-blue-50 {{ 'nav-active' if active=='dashboard' else '' }}">Dashboard</a>
+            <a href="{{ url_for('students') }}" class="px-3 py-2 rounded-lg hover:bg-blue-50 {{ 'nav-active' if active=='students' else '' }}">Students</a>
+            <a href="{{ url_for('attendance') }}" class="px-3 py-2 rounded-lg hover:bg-blue-50 {{ 'nav-active' if active=='attendance' else '' }}">Attendance</a>
+            <a href="{{ url_for('results') }}" class="px-3 py-2 rounded-lg hover:bg-blue-50 {{ 'nav-active' if active=='results' else '' }}">Results</a>
+            <a href="{{ url_for('reports') }}" class="px-3 py-2 rounded-lg hover:bg-blue-50 {{ 'nav-active' if active=='reports' else '' }}">Reports</a>
+        </div>
+
+        <div class="flex items-center space-x-3">
+            <div class="text-right">
+                <p class="text-sm font-medium">Diveen Baduvanda</p>
+                <p class="text-xs text-gray-500 -mt-1">baduvandadiveen@gmail.com</p>
+            </div>
+            <a href="#" class="text-gray-600 hover:text-red-600 text-sm">Logout</a>
+        </div>
+    </div>
+</nav>
+
+<!-- Main Content Wrapper -->
+<div class="pt-24 pb-10 max-w-7xl mx-auto px-6">
+    {% block content %}{% endblock %}
+</div>
+
+<!-- Footer -->
+<footer class="w-full text-center py-6 text-sm text-gray-500">
+    © 2024 FaceReco Attendance System. All rights reserved.
+</footer>
+
+</body>
+</html>

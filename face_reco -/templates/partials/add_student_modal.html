@@ -1,0 +1,52 @@
+{% raw %}{% endraw %}
+<div id="studentModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+<div class="bg-white rounded-2xl shadow-xl w-full max-w-lg p-6">
+<h3 class="text-xl font-semibold mb-4">Add New Student</h3>
+
+
+<form action="/students/add" method="POST" enctype="multipart/form-data" class="space-y-4">
+
+
+<div>
+<label class="text-sm font-medium">Student ID</label>
+<input type="text" name="student_id" required class="w-full mt-1 px-4 py-2 border rounded-lg focus:ring focus:ring-blue-200" />
+</div>
+
+
+<div>
+<label class="text-sm font-medium">Full Name</label>
+<input type="text" name="full_name" required class="w-full mt-1 px-4 py-2 border rounded-lg focus:ring focus:ring-blue-200" />
+</div>
+
+
+<div>
+<label class="text-sm font-medium">Email</label>
+<input type="email" name="email" class="w-full mt-1 px-4 py-2 border rounded-lg focus:ring focus:ring-blue-200" />
+</div>
+
+
+<div>
+<label class="text-sm font-medium">Phone</label>
+<input type="text" name="phone" class="w-full mt-1 px-4 py-2 border rounded-lg focus:ring focus:ring-blue-200" />
+</div>
+
+
+<div>
+<label class="text-sm font-medium">Class</label>
+<input type="text" name="class" placeholder="e.g., 3rd Sem C" class="w-full mt-1 px-4 py-2 border rounded-lg focus:ring focus:ring-blue-200" />
+</div>
+
+
+<div>
+<label class="text-sm font-medium">Upload Photo</label>
+<input type="file" name="photo" accept="image/*" class="w-full mt-1" />
+</div>
+
+
+<div class="flex justify-end space-x-3 pt-4">
+<button type="button" onclick="closeStudentModal()" class="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300">Cancel</button>
+<button type="submit" class="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700">Save</button>
+</div>
+</form>
+</div>
+</div>

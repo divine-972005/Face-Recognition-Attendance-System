@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="flex justify-between items-center mb-6">
+    <h2 class="text-2xl font-bold text-gray-800">Attendance</h2>
+
+    <!-- Start Recognition Button -->
+    <button 
+        onclick="openCameraModal()"
+        class="px-5 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition">
+        Start Recognition
+    </button>
+</div>
+
+<!-- Students Table -->
+<div class="overflow-x-auto bg-white shadow rounded-lg p-4">
+    <table class="min-w-full text-sm text-left">
+        <thead>
+            <tr class="border-b bg-gray-100 text-gray-600">
+                <th class="py-3 px-4">Student ID</th>
+                <th class="py-3 px-4">Name</th>
+                <th class="py-3 px-4">Class</th>
+                <th class="py-3 px-4">Status</th>
+                <th class="py-3 px-4 text-center">Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for s in students %}
+            <tr class="border-b hover:bg-gray-50">
+                
+                <!-- ID -->
+                <td class="py-3 px-4">{{ s.student_id }}</td>
+
+                <!-- Name -->
+                <td class="py-3 px-4">{{ s.name }}</td>
+
+                <!-- Class -->
+                <td class="py-3 px-4">{{ s.class_name }}</td>
+
+                <!-- Status -->
+                <td class="py-3 px-4">
+                    {% if s.student_id in present_today %}
+                        <span class="px-3 py-1 text-xs rounded-full bg-green-100 text-green-700">Present</span>
+                    {% else %}
+                        <span class="px-3 py-1 text-xs rounded-full bg-red-100 text-red-700">Absent</span>
+                    {% endif %}
+                </td>
+
+                <!-- Actions -->
+                <td class="py-3 px-4 text-center">
+                    {% if s.student_id not in present_today %}
+                    <button 
+                        onclick="markPresent('{{ s.student_id }}')"
+                        class="px-3 py-1 bg-green-500 text-white text-xs rounded hover:bg-green-600">
+                        Mark Present
+                    </button>
+                    {% else %}
+                    <span class="text-gray-400 text-xs">Already Marked</span>
+                    {% endif %}
+                </td>
+
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+<!-- INCLUDE CAMERA MODAL -->
+{% include 'partials/camera_modal.html' %}
+
+
+<!-- ==============================
+     JAVASCRIPT
+============================== -->
+
+<script>
+
+// ---------------
+// Manual Marking
+// ---------------
+function markPresent(student_id) {
+    fetch(`/attendance/mark/${student_id}`, { method: 'POST' })
+        .then(() => location.reload());
+}
+
+// -----------------------
+// CAMERA MODAL FUNCTIONS
+// -----------------------
+
+let video = null;
+let stream = null;
+
+function openCameraModal() {
+    document.getElementById('cameraModal').classList.remove('hidden');
+    startCamera();
+}
+
+function closeCameraModal() {
+    document.getElementById('cameraModal').classList.add('hidden');
+    stopCamera();
+}
+
+
+function startCamera() {
+    video = document.getElementById('videoFeed');
+
+    navigator.mediaDevices.getUserMedia({ video: true })
+        .then(s => {
+            stream = s;
+            video.srcObject = stream;
+            video.play();
+        });
+}
+
+function stopCamera() {
+    if (stream) {
+        stream.getTracks().forEach(t => t.stop());
+    }
+}
+
+
+// ---------------------------
+// CAPTURE + SEND TO BACKEND
+// ---------------------------
+function captureAndRecognize() {
+
+    const canvas = document.createElement("canvas");
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(video, 0, 0);
+
+    canvas.toBlob(blob => {
+        const formData = new FormData();
+        formData.append("image", blob, "capture.jpg");
+
+        fetch("/api/recognize", {
+            method: "POST",
+            body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+
+            console.log("Recognition Result:", data);
+
+            if (data.status === "success") {
+                alert("Attendance marked for: " + data.student_id);
+                closeCameraModal();
+                location.reload();
+            }
+            else if (data.status === "unknown") {
+                alert("Face not recognized.");
+            }
+            else if (data.status === "no_face") {
+                alert("No face detected. Try again.");
+            }
+            else {
+                alert("Error capturing face.");
+            }
+        });
+    }, "image/jpeg");
+
+}
+
+</script>
+
+{% endblock %}
